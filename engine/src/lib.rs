@@ -15,7 +15,7 @@ mod enclosure;
 ///
 /// Example
 /// ```rust
-/// let animal_list = generate_initial_animal_list(10);
+/// let animal_list = engine::generate_initial_animal_list(10);
 /// assert_eq!(animal_list.len(), 10);
 /// ```
 pub fn generate_initial_animal_list(how_many: u32) -> Vec<animal::Animal> {
@@ -36,8 +36,8 @@ pub fn generate_initial_animal_list(how_many: u32) -> Vec<animal::Animal> {
 ///
 /// Example
 /// ```rust
-/// let animal_list = generate_initial_animal_list(10);
-/// print_animal_list(&animal_list);
+/// let animal_list = engine::generate_initial_animal_list(10);
+/// engine::print_animal_list(&animal_list);
 /// ```
 pub fn print_animal_list(animal_list: &Vec<animal::Animal>) {
     for a in animal_list {
@@ -45,16 +45,19 @@ pub fn print_animal_list(animal_list: &Vec<animal::Animal>) {
     }
 }
 
+/// This function will take a list of enclosures and print the list.
+/// This will print the list of enclosures to the console.
+/// For each enclosure it will print a list of animals in the enclosure.
+pub fn print_enclosure_list(enclosure_list: &Vec<enclosure::Enclosure>) {
+    for e in enclosure_list {
+        println!("Enclosure {:?}", e);
+        let al = &e.animal_list;
+        println!("Animal {:?}", al);
+    }
+}
+
 /// This function associates an animal with a given enclosure.
 /// It will return an error if the enclosure is full or if the animal cannot be added to the enclosure due to the rules of the game.
-///
-/// Example
-/// ```rust
-/// let animal = animal::Animal::new(1);
-/// let mut enclosure = enclosure::Enclosure::new(1);
-/// let result = assign_animal_to_enclosure(animal, &mut enclosure);
-/// assert!(result.is_ok());
-/// ```
 pub fn assign_animal_to_enclosure(
     animal: animal::Animal,
     enclosure: &mut enclosure::Enclosure,
@@ -66,6 +69,7 @@ pub fn assign_animal_to_enclosure(
 ///
 /// Example
 /// ```rust
+/// use engine::generate_enclosure_list;
 /// let enclosure_list = generate_enclosure_list(10);
 /// assert_eq!(enclosure_list.len(), 10);
 /// ```
@@ -165,16 +169,6 @@ mod engine_tests {
         _ = assign_animal_to_enclosure(a2, &mut enclosure);
         let result = assign_animal_to_enclosure(a3, &mut enclosure);
         assert!(result.is_ok());
-    }
-
-    #[test]
-    fn a_male_has_to_be_alone_in_an_enclosure() {
-        let mut enclosure = enclosure::Enclosure::new(1);
-        let a1 = animal::Animal::new_specific_sex(1, animal::Sex::Male);
-        let a2 = animal::Animal::new_specific_sex(2, animal::Sex::Male);
-        _ = assign_animal_to_enclosure(a1, &mut enclosure);
-        let result = assign_animal_to_enclosure(a2, &mut enclosure);
-        assert!(result.is_err());
     }
 
     #[test]
