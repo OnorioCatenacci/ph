@@ -1,6 +1,5 @@
 [workspace]
 members = ["engine"]
-default-members = ["engine"]
 
 [package]
 name = "ph"
