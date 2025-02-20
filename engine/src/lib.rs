@@ -6,9 +6,10 @@
 //! We've abstracted the animals and the enclosures into their own modules.
 //! The animals are created with a random sex, and the enclosures have a maximum capacity of 3 animals.
 
-use enclosure::Enclosure;
-
+use enclosure::{move_animal_into_enclosure, Enclosure};
+/// This module contains the animal struct and the functions to create animals.
 pub mod animal;
+/// This module contains the enclosure struct and the functions to create enclosures as well as functions to move animals into enclosures.
 pub mod enclosure;
 
 /// This function generates an initial list of animals to assign to enclosures.
@@ -32,7 +33,7 @@ pub fn generate_initial_animal_list(how_many: u32) -> Enclosure {
     };
     let mut temporary_enclosure = Enclosure::new(0);
     for a in animal_list {
-        let _r = Enclosure::move_animal_into_enclosure(None, a, &mut temporary_enclosure);
+        let _r = move_animal_into_enclosure(None, a, &mut temporary_enclosure);
     }
     temporary_enclosure
 }
@@ -147,11 +148,11 @@ mod engine_tests {
     }
 
     #[test]
-    fn cannot_assign_more_than_three_animals_to_an_enclosure() {
+    fn cannot_assign_an_animal_to_an_enclosure_more_than_once() {
         let mut enclosure = enclosure::Enclosure::new(1);
         let source_enclosure = generate_initial_animal_list(4);
         for a in source_enclosure.animals_in_enclosure.iter() {
-            let result = Enclosure::move_animal_into_enclosure(None, *a, &mut enclosure);
+            let result = move_animal_into_enclosure(None, *a, &mut enclosure);
             if result.is_err() {
                 assert_eq!(
                     result.unwrap_err(),
@@ -167,9 +168,9 @@ mod engine_tests {
         let a1 = animal::Animal::new_specific_sex(1, animal::Sex::Female);
         let a2 = animal::Animal::new_specific_sex(2, animal::Sex::Female);
         let a3 = animal::Animal::new_specific_sex(3, animal::Sex::Female);
-        _ = Enclosure::move_animal_into_enclosure(None, a1, &mut enclosure);
-        _ = Enclosure::move_animal_into_enclosure(None, a2, &mut enclosure);
-        let result = Enclosure::move_animal_into_enclosure(None, a3, &mut enclosure);
+        _ = move_animal_into_enclosure(None, a1, &mut enclosure);
+        _ = move_animal_into_enclosure(None, a2, &mut enclosure);
+        let result = move_animal_into_enclosure(None, a3, &mut enclosure);
         assert!(result.is_ok());
     }
 
@@ -182,7 +183,7 @@ mod engine_tests {
             .into_iter()
             .zip(el.iter_mut())
         {
-            let result = Enclosure::move_animal_into_enclosure(None, a, e);
+            let result = move_animal_into_enclosure(None, a, e);
             assert!(result.is_ok());
         }
     }
